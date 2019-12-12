@@ -51,8 +51,6 @@ const render: Handler<DepartureConfig, any> = (event: DepartureConfig) => {
             defaultParams);
 
         // Obtains data for each stop from PTV API.
-        let promiseId = Math.floor(Math.random() * 300);
-        
         let request = Phin({
             url: url,
         }).then((data) => {
@@ -89,12 +87,15 @@ const render: Handler<DepartureConfig, any> = (event: DepartureConfig) => {
             // Takes out PTV "combined" routes, it is not useful.
             return !thing.route.toLowerCase().includes('combine'); 
         }).slice(0, 80);
+
     }).then((data) => {
+
+
         /**
-         * This function renders the board, should be delegated to another lambda function.
+         * This function renders the board, may/may not be delegated to another lambda function.
          */
         let displayedDepartures = data.slice(0, 5);
-        return Jimp.create(600,400, Jimp.cssColorToHex("#FFFFFFFF"))
+        return Jimp.create(640, 384, Jimp.cssColorToHex("#FFFFFFFF"))
             .then(async (img) => {
                 let FONT = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
                 let ROUTEFONT = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
@@ -119,8 +120,8 @@ const render: Handler<DepartureConfig, any> = (event: DepartureConfig) => {
                         .print(ROUTEFONT, 115, 30 + offset,
                             currentDep.to)
                         // prints the subtitle (i.e. 'via Place')
-                        .print(MINIFONT, 115, 30 + 35 + offset,
-                            "via ${placeholder}")
+                        // .print(MINIFONT, 115, 30 + 35 + offset,
+                        //     "via ${placeholder}")
                         // prints the 'when to walk timer'
                         .print(MINIFONT, 490, 30 + offset,
                             "walk in")
