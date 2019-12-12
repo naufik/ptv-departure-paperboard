@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc index; zip -r build.zip ."
+    "build": "tsc index; zip -r build.zip . -x *.git*"
   },
   "author": "naufik",
   "license": "MIT",
