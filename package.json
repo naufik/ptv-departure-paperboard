@@ -1,0 +1,20 @@
+{
+  "name": "departure-board",
+  "version": "1.0.0",
+  "description": "Departure Board",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "naufik",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.37",
+    "@types/node": "^12.12.16",
+    "@types/phin": "^3.4.0"
+  },
+  "dependencies": {
+    "jimp": "^0.9.3",
+    "phin": "^3.4.1"
+  }
+}
