@@ -2,7 +2,7 @@
  * Departure Board.
  */
 
-import { Handler } from "aws-lambda";
+import { Handler, } from "aws-lambda";
 import { DepartureConfig } from "./departure.d"
 // TODO: Maybe try to not use the Phin library? It can make things 10kB lighter
 // and lambda loading less required.
@@ -90,7 +90,6 @@ const render: Handler<DepartureConfig, any> = (event: DepartureConfig) => {
 
     }).then((data) => {
 
-
         /**
          * This function renders the board, may/may not be delegated to another lambda function.
          */
@@ -129,8 +128,16 @@ const render: Handler<DepartureConfig, any> = (event: DepartureConfig) => {
                             `${Math.floor(mins)}min`);
                     offset += 64;
                 }
-                img.writeAsync("departures.bmp");
+                return img;
             });
+    }).then((img) => {
+        return {
+            status: 200,
+            headers: {
+                "Content-Type": "image/bmp"
+            },
+            body: img.bitmap.data
+        }
     });
 }
 
