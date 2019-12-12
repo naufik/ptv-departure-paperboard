@@ -2,13 +2,12 @@
  * Departure Board.
  */
 
-import { Handler, } from "aws-lambda";
+import { Handler, APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { DepartureConfig } from "./departure.d"
 // TODO: Maybe try to not use the Phin library? It can make things 10kB lighter
 // and lambda loading less required.
 import * as Phin from 'phin';
 import * as Crypto from 'crypto';
-import * as Path from 'path';
 import * as QueryString from 'querystring';
 // TODO: JIMP may be 'too heavy too load' (16MB) for lambda purposes. May want to use
 // a different library or delegate it to an always-on service.
@@ -37,16 +36,18 @@ const finalizeRequest = (req: string, params: any = {}) => {
  * Lambda handler function.
  * @param event 
  */
-const render: Handler<DepartureConfig, any> = (event: DepartureConfig) => {
+export const render: Handler<APIGatewayEvent, APIGatewayProxyResult> = (event: APIGatewayEvent) => {
     let defaultParams = {
         expand: [ "direction", "route" ],
         max_results: 40,
     };
+    
+    let body: DepartureConfig = JSON.parse(event.body);
 
     // TODO: Create a DepartureInfo interface
     let requests: Promise<any>[] = [];
 
-    for (let item of event.trackedStops) {
+    for (let item of body.trackedStops) {
         let url = finalizeRequest(`departures/route_type/${item.routeType}/stop/${item.stopId}`,
             defaultParams);
 
@@ -128,19 +129,19 @@ const render: Handler<DepartureConfig, any> = (event: DepartureConfig) => {
                             `${Math.floor(mins)}min`);
                     offset += 64;
                 }
-                return img;
+                return img.getBufferAsync('image/bmp');
             });
     }).then((img) => {
+        /**
+         * This returns the response.
+         */
         return {
-            status: 200,
+            statusCode: 200,
             headers: {
-                "Content-Type": "image/bmp"
+                "Content-Type": "image/bmp",
+                "Access-Control-Allow-Origin": "*",
             },
-            body: img.bitmap.data
+            body: img.toString("utf-8"),
         }
     });
-}
-
-
-
-export default render;
+};

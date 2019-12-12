@@ -1,4 +1,4 @@
-import render from './index';
+import { render } from './index';
 
 const event = {
     timezoneOffset: 0,
@@ -15,5 +15,3 @@ const event = {
         }
     ]
 }
-
-render(event, null, null);
