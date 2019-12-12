@@ -11,4 +11,27 @@ is displayed on [this ePaper screen](https://www.waveshare.com/wiki/7.5inch_e-Pa
 
 ## Test / Evaluation
 
-Coming soon.
+To try, send a HTTP POST request to (soon) with the
+following JSON body:
+
+```json
+{
+    "timezoneOffset": 0, // This parameter is not used, but needs to be here. Will be removed.
+    "trackedStops": Stop[] // A list of stops to 'track'.
+}
+```
+
+Each `Stop` has the following format:
+```json
+{
+    "stopId": 1000, // Stop primary key.
+    "routeType": 2, // The PTV 'routeType', see below.
+    "routes": "all",    // Which routes to track, only 'all' is supported right now.
+}
+```
+
+
+## Notes
+
+This is not yet finished, and the `bmp` image is not properly output as a
+response yet.

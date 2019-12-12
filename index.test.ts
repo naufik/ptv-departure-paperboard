@@ -1,6 +1,6 @@
 import render from './index';
 
-const param ={
+const event = {
     timezoneOffset: 0,
     trackedStops: [
         {
@@ -16,4 +16,4 @@ const param ={
     ]
 }
 
-render(param, null, null);
+render(event, null, null);
