@@ -4,7 +4,8 @@
   "description": "Departure Board",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc index; zip -r build.zip ."
   },
   "author": "naufik",
   "license": "MIT",
