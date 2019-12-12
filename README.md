@@ -14,7 +14,7 @@ is displayed on [this ePaper screen](https://www.waveshare.com/wiki/7.5inch_e-Pa
 To try, send a HTTP POST request to (soon) with the
 following JSON body:
 
-```json
+```typescript
 {
     "timezoneOffset": 0, // This parameter is not used, but needs to be here. Will be removed.
     "trackedStops": Stop[] // A list of stops to 'track'.
@@ -22,7 +22,7 @@ following JSON body:
 ```
 
 Each `Stop` has the following format:
-```json
+```typescript
 {
     "stopId": 1000, // Stop primary key.
     "routeType": 2, // The PTV 'routeType', see below.
