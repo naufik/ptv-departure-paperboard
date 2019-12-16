@@ -46,7 +46,7 @@ export const handleAPICall: Handler<APIGatewayEvent, APIGatewayProxyResult> = as
                 "Content-Type": "image/bmp",
                 "Access-Control-Allow-Origin": "*",
             },
-            body: image as string,
+            body: (image as Buffer).toString(),
         }
     }
 
@@ -66,7 +66,7 @@ export const handleAPICall: Handler<APIGatewayEvent, APIGatewayProxyResult> = as
  * in the buffer.
  * @param event 
  */
-export const render: Handler<DepartureConfig, string> = (event: DepartureConfig) => {
+export const render: Handler<DepartureConfig, Buffer> = (event: DepartureConfig) => {
     let defaultParams = {
         expand: [ "direction", "route" ],
         max_results: 40,
@@ -158,7 +158,8 @@ export const render: Handler<DepartureConfig, string> = (event: DepartureConfig)
                             `${Math.floor(mins)}min`);
                     offset += 64;
                 }
-                return (await img.getBufferAsync('image/bmp')).toString('utf-8');
+                img = await img
+                return (await img.getBufferAsync("image/bmp"));
             });
     });
 };

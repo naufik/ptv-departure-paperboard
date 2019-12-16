@@ -20,7 +20,7 @@ The function requires two environment variables to run:
 - `PTV_KEY` that contains your PTV developer key.
 - `PTV_DEVID` that contains your PTV developer ID.
 You need to obtain these values from PTV by emailing them, see [more information
-on the PTV API](https://www.ptv.vic.gov.au/footer/data-and-reporting/datasets/ptv-timetable-api)
+on the PTV API](https://www.ptv.vic.gov.au/footer/data-and-reporting/datasets/ptv-timetable-api).
 
 ### Running this function on Lambda
 This assumes that you are running on the web-console, not the CLI alternative.
