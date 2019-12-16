@@ -9,7 +9,7 @@ import * as File from 'fs';
  * To test other PTV stops, change the stopID and routeType parameters. As of
  * this version, the routeIds parameter do not work properly yet.
  * 
- * See [URL] for more information.
+ * See https://github.com/naufik/ptv-departure-paperboard for more information.
  */
 const event = {
     timezoneOffset: 0,
