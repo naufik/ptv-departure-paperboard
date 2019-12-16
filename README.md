@@ -55,8 +55,7 @@ npm install -g ts-node typescript
 ```
 
 Then, create a file to test or use the function. Have a look at `index.test.ts`
-to see how it can be called. The first argument `event` have the same properties
-as the test method above.
+to see how it can be called. See **Request Body Format** for format of `event`.
 
 On Linux, run
 ```
