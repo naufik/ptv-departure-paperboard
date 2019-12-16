@@ -1,5 +1,6 @@
 /**
- * Departure Board.
+ * PTV Departure Paperboard
+ * by Naufal http://github.com/naufik
  */
 
 import { Handler, APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
@@ -31,23 +32,51 @@ const finalizeRequest = (req: string, params: any = {}) => {
     return BASE_URL + req + `&signature=${sig}`;
 }
 
-
 /**
- * Lambda handler function.
+ * This function handles HTTP POST API calls.
  * @param event 
  */
-export const render: Handler<APIGatewayEvent, APIGatewayProxyResult> = (event: APIGatewayEvent) => {
+export const handleAPICall: Handler<APIGatewayEvent, APIGatewayProxyResult> = async (event: APIGatewayEvent) => {
+    let image = await render(JSON.parse(event.body), null, null)
+
+    if (image !== void 0) {
+        return {
+            statusCode: 200,
+            headers: {
+                "Content-Type": "image/bmp",
+                "Access-Control-Allow-Origin": "*",
+            },
+            body: image as string,
+        }
+    }
+
+    return {
+        statusCode: 400,
+        headers: {
+            "Content-Type": "text/plain",
+            "Access-Control-Allow-Origin": "*",
+        },
+        body: "<h1>Bad Request</h1>"
+
+    }
+}
+
+/**
+ * This function polls specified stops from the PTV API and creates a BMP image
+ * in the buffer.
+ * @param event 
+ */
+export const render: Handler<DepartureConfig, string> = (event: DepartureConfig) => {
     let defaultParams = {
         expand: [ "direction", "route" ],
         max_results: 40,
     };
     
-    let body: DepartureConfig = JSON.parse(event.body);
 
     // TODO: Create a DepartureInfo interface
     let requests: Promise<any>[] = [];
 
-    for (let item of body.trackedStops) {
+    for (let item of event.trackedStops) {
         let url = finalizeRequest(`departures/route_type/${item.routeType}/stop/${item.stopId}`,
             defaultParams);
 
@@ -129,19 +158,7 @@ export const render: Handler<APIGatewayEvent, APIGatewayProxyResult> = (event: A
                             `${Math.floor(mins)}min`);
                     offset += 64;
                 }
-                return img.getBufferAsync('image/bmp');
+                return (await img.getBufferAsync('image/bmp')).toString('utf-8');
             });
-    }).then((img) => {
-        /**
-         * This returns the response.
-         */
-        return {
-            statusCode: 200,
-            headers: {
-                "Content-Type": "image/bmp",
-                "Access-Control-Allow-Origin": "*",
-            },
-            body: img.toString("utf-8"),
-        }
     });
 };
