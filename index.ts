@@ -57,7 +57,6 @@ export const handleAPICall: Handler<APIGatewayEvent, APIGatewayProxyResult> = as
             "Access-Control-Allow-Origin": "*",
         },
         body: "<h1>Bad Request</h1>"
-
     }
 }
 
@@ -158,7 +157,7 @@ export const render: Handler<DepartureConfig, Buffer> = (event: DepartureConfig)
                             `${Math.floor(mins)}min`);
                     offset += 64;
                 }
-                img = await img
+                img = await img;
                 return (await img.getBufferAsync("image/bmp"));
             });
     });
