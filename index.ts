@@ -36,7 +36,8 @@ const finalizeRequest = (req: string, params: any = {}) => {
  * This function handles HTTP POST API calls.
  * @param event 
  */
-export const handleAPICall: Handler<APIGatewayEvent, APIGatewayProxyResult> = async (event: APIGatewayEvent) => {
+export const handlePOSTRequest: Handler<APIGatewayEvent, APIGatewayProxyResult> = 
+    async (event: APIGatewayEvent) => {
     let image = await render(JSON.parse(event.body), null, null)
 
     if (image !== void 0) {
@@ -59,6 +60,48 @@ export const handleAPICall: Handler<APIGatewayEvent, APIGatewayProxyResult> = as
         body: "<h1>Bad Request</h1>"
     }
 }
+
+/**
+ * An alternative GET Request handler when step functions are not used.
+ *  
+ * @param event 
+ */
+export const handleGETRequest: Handler<APIGatewayEvent, APIGatewayProxyResult> =
+    async (event: APIGatewayEvent) => {
+        // Return non-GET requests with errors.
+        if (event.httpMethod !== "GET") {
+            return {
+                statusCode: 401,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: "Malformed request body.",
+            }
+        }
+
+        const stops = event.multiValueQueryStringParameters.stopID
+            .slice(0, 3).map((param) => {
+            return {
+                stopId: parseInt(param),
+                routeIds: 'all',
+                routeType: parseInt(event.queryStringParameters.routeType),
+            }
+        });
+
+        const bitmap = await (render({
+            timezoneOffset: 0,
+            trackedStops: stops,
+        }, null, null) as Promise<Buffer>);
+
+        return {
+            statusCode: 200,
+            headers: {
+                "Content-Type": "image/bmp",
+                "Access-Control-Allow-Origin": "*",
+            },
+            body: bitmap.toString(),
+        }
+    };
 
 /**
  * This function polls specified stops from the PTV API and creates a BMP image
