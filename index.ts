@@ -3,7 +3,7 @@
  * by Naufal http://github.com/naufik
  */
 
-import { Handler, APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import { Handler, APIGatewayEvent, APIGatewayProxyResult, Callback, Context } from "aws-lambda";
 import { DepartureConfig } from "./departure.d"
 // TODO: Maybe try to not use the Phin library? It can make things 10kB lighter
 // and lambda loading less required.
@@ -24,7 +24,7 @@ const BASE_URL: string = "https://timetableapi.ptv.vic.gov.au";
  * Creates a finalized version of the request, this adds the base URL and the
  * signature required by PTV API.
  */
-const finalizeRequest = (req: string, params: any = {}) => {
+export const finalizeRequest = (req: string, params: any = {}) => {
     req = '/v3/' + req + (req.includes("?") ? "&" : "?") + `devId=${PTV_ID}&${QueryString.stringify(params)}`;
 
     const sig = Crypto.createHmac('sha1', Buffer.from(PTV_KEY))
@@ -67,7 +67,7 @@ export const handlePOSTRequest: Handler<APIGatewayEvent, APIGatewayProxyResult> 
  * @param event 
  */
 export const handleGETRequest: Handler<APIGatewayEvent, APIGatewayProxyResult> =
-    async (event: APIGatewayEvent) => {
+    async (event: APIGatewayEvent, ctx: Context, cbk: Callback) => {
         // Return non-GET requests with errors.
         if (event.httpMethod !== "GET") {
             return {
@@ -88,10 +88,12 @@ export const handleGETRequest: Handler<APIGatewayEvent, APIGatewayProxyResult> =
             }
         });
 
+        console.log(event);
+
         const bitmap = await (render({
             timezoneOffset: 0,
             trackedStops: stops,
-        }, null, null) as Promise<Buffer>);
+        }, ctx, undefined) as Promise<Buffer>);
 
         return {
             statusCode: 200,
@@ -99,14 +101,14 @@ export const handleGETRequest: Handler<APIGatewayEvent, APIGatewayProxyResult> =
                 "Content-Type": "image/bmp",
                 "Access-Control-Allow-Origin": "*",
             },
-            body: bitmap.toString(),
+            body: bitmap.toString("binary"),
         }
     };
 
 /**
  * This function polls specified stops from the PTV API and creates a BMP image
  * in the buffer.
- * @param event 
+ * @param event
  */
 export const render: Handler<DepartureConfig, Buffer> = (event: DepartureConfig) => {
     let defaultParams = {
