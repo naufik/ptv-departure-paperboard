@@ -29,5 +29,5 @@ const event = {
 
 let output = (render(event, null, null) as Promise<Buffer>).then((img) => {
     console.log(img);
-    File.writeFileSync(__dirname + '/test.bmp', img);
+    File.writeFileSync(__dirname + '/test2.bmp', img.toString("binary"));
 });

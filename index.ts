@@ -101,7 +101,8 @@ export const handleGETRequest: Handler<APIGatewayEvent, APIGatewayProxyResult> =
                 "Content-Type": "image/bmp",
                 "Access-Control-Allow-Origin": "*",
             },
-            body: bitmap.toString("binary"),
+            isBase64Encoded: true,
+            body: bitmap.toString("base64"),
         }
     };
 
