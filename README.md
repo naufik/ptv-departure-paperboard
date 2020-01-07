@@ -11,6 +11,10 @@ is displayed on [this ePaper screen](https://www.waveshare.com/wiki/7.5inch_e-Pa
 
 ## Using the Function
 
+You can run the function locally or on AWS Lambda.
+
+### Preliminary Steps
+
 Clone the repository and run:
 ```bash
 npm install
@@ -67,9 +71,15 @@ function will save a file called test.bmp in the root folder of your project.
 
 ## Test / Evaluation
 
-Evaluation URL coming soon.
+Try this out by visiting the URL:
 
-## Request Body Format
+```
+https://b7kmrvpr6d.execute-api.ap-southeast-1.amazonaws.com/default/departures?stopID=14281&routeType=2
+```
+
+Stop ID can be replaced with ID of another bus stop. Instructions to obtain in the next section.
+
+## Request Body Format (for POST)
 
 ```typescript
 {
@@ -103,7 +113,7 @@ Each `Stop` has the following format:
 
 ## To-Do List
 
-- Organize and decouple: rewrite with async/await (I do realize what I have now 
-is not in the best stylistic choice).
+- Use a custom URL for the evaluation. 
+- Organize and decouple: rewrite with async/await (I do realize what I have now is not in the best stylistic choice).
 - Rewrite the rendering logic: JIMP is fantastic, but heavy. Loading the library
 alone uses a lot of RAM, so I plan to rewrite this using
