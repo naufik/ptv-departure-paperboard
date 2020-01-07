@@ -24,7 +24,7 @@ const BASE_URL: string = "https://timetableapi.ptv.vic.gov.au";
  * Creates a finalized version of the request, this adds the base URL and the
  * signature required by PTV API.
  */
-export const finalizeRequest = (req: string, params: any = {}) => {
+const finalizeRequest = (req: string, params: any = {}) => {
     req = '/v3/' + req + (req.includes("?") ? "&" : "?") + `devId=${PTV_ID}&${QueryString.stringify(params)}`;
 
     const sig = Crypto.createHmac('sha1', Buffer.from(PTV_KEY))
@@ -121,11 +121,16 @@ export const render: Handler<DepartureConfig, Buffer> = (event: DepartureConfig)
     // TODO: Create a DepartureInfo interface
     let requests: Promise<any>[] = [];
 
+    /**
+     * Creates resources
+     */
     for (let item of event.trackedStops) {
         let url = finalizeRequest(`departures/route_type/${item.routeType}/stop/${item.stopId}`,
             defaultParams);
 
-        // Obtains data for each stop from PTV API.
+        /**
+         * Obtains departure data for each stop from PTV API.
+         */
         let request = Phin({
             url: url,
         }).then((data) => {
@@ -197,8 +202,8 @@ export const render: Handler<DepartureConfig, Buffer> = (event: DepartureConfig)
                         // .print(MINIFONT, 115, 30 + 35 + offset,
                         //     "via ${placeholder}")
                         // prints the 'when to walk timer'
-                        .print(MINIFONT, 490, 30 + offset,
-                            "walk in")
+                        // .print(MINIFONT, 490, 30 + offset,
+                            // "walk in")
                         .print(ROUTEFONT, 490, 43 + offset, 
                             `${Math.floor(mins)}min`);
                     offset += 64;
